@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
+using System.Web.Compilation;
 using nothinbutdotnetstore.infrastructure.containers;
+using nothinbutdotnetstore.web.application;
 using nothinbutdotnetstore.web.core;
+using nothinbutdotnetstore.web.core.stubs;
 
 namespace nothinbutdotnetstore.tasks.startup
 {
@@ -14,13 +18,28 @@ namespace nothinbutdotnetstore.tasks.startup
         {
             configure_core_facilities();
 
-            configure_the_front_controller();
+            configure_the_front_controller_components();
         }
 
-        static void configure_the_front_controller()
+        static void configure_the_front_controller_components()
         {
-//            dependencies.Add(typeof(IProcessWebRequests),new AutomaticDependencyFactory(typeof(FrontController),
-//                the_container,));
+            register<IProcessWebRequests,FrontController>();
+            register<IFindCommandsThatCanProcessRequests,CommandRegistry>();
+            register<IRenderReports,ReportEngine>();
+            register<GetTheCurrentHttpContext>(() => HttpContext.Current);
+            register<PageFactory>(BuildManager.CreateInstanceFromVirtualPath);
+            register<ICreateRequestsTheFrontControllerCanProcess, StubRequestMapper>();
+        }
+
+        static void register<Contract, Implementation>() where Implementation : Contract
+        {
+           dependencies.Add(typeof(Contract),new AutomaticDependencyFactory(typeof(Implementation),
+               the_container,new GreedyConstructorSelectionStrategy())); 
+        }
+
+        static void register<Contract>(Contract implementation)
+        {
+            dependencies.Add(typeof(Contract), new ExplicitDependencyFactory(() => implementation);
         }
 
         static void configure_core_facilities()
