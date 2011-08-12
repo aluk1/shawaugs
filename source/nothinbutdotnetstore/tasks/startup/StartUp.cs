@@ -16,9 +16,11 @@ namespace nothinbutdotnetstore.tasks.startup
 
         public static void run()
         {
-            configure_core_facilities();
+//            Start.by<ConfiguringTheContainer>()
+//                .follow_with<LoadingConfiguration>()
+//                .follow_with<PrimeTheCaches>()
+//                .finish_by<TriggerFirstHits>();
 
-            configure_the_front_controller_components();
         }
 
         static void configure_the_front_controller_components()
