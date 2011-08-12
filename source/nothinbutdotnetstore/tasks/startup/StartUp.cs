@@ -41,7 +41,7 @@ namespace nothinbutdotnetstore.tasks.startup
 
         static void register<Contract>(Contract implementation)
         {
-            dependencies.Add(typeof(Contract), new ExplicitDependencyFactory(() => implementation);
+            dependencies.Add(typeof(Contract), new ExplicitDependencyFactory(() => implementation));
         }
 
         static void configure_core_facilities()
